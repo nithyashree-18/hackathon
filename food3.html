@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShareBite</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+    body{background:#f9fafb;color:#333;overflow-x:hidden;}
+    header {
+      width: 100%;
+      padding: 1rem 3rem;
+      display: flex;
+      align-items: center;      
+      justify-content: space-between;
+      background: #ffffffee;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo{font-size:1.6rem;font-weight:800;color:#16a34a;display:flex;align-items:center;gap:0.4rem;}
+    nav{display:flex;align-items:center;gap:2rem;}
+    nav a{text-decoration:none;font-weight:600;color:#374151;transition:0.3s;position:relative;}
+    nav a::after{content:"";position:absolute;bottom:-4px;left:0;width:0;height:2px;background:#16a34a;transition:width 0.3s ease;}
+    nav a:hover{color:#16a34a;}
+    nav a:hover::after{width:100%;}
+    .btn {
+      margin: 0;             
+      height: 40px;           
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:linear-gradient(135deg,#16a34a,#22c55e);
+      color:white;
+      border:none;
+      padding:0.6rem 1.3rem;
+      border-radius:8px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s ease;
+      box-shadow:0 4px 12px rgba(22,163,74,0.3);
+    }
+    .btn:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(22,163,74,0.45);}
+    .btn-alt{background:white;color:#16a34a;border:2px solid #16a34a;}
+    .btn-alt:hover{background:#f3f4f6;color:#15803d;}
+    .btn-danger{background:linear-gradient(135deg,#dc2626,#ef4444);box-shadow:0 4px 12px rgba(220,38,38,0.3);}
+    .btn-danger:hover{box-shadow:0 6px 18px rgba(220,38,38,0.45);}
+    .btn-small{height:32px;padding:0.4rem 0.8rem;font-size:0.9rem;}
+    .hero{height:100vh;background:url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;display:flex;align-items:center;justify-content:center;text-align:center;position:relative;color:white;}
+    .hero::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,0.55);}
+    .hero-content{position:relative;z-index:2;max-width:800px;padding:1rem;}
+    .hero h1{font-size:3.5rem;font-weight:900;text-transform:uppercase;letter-spacing:1px;text-shadow:0 6px 20px rgba(0,0,0,0.7);}
+    .hero p{margin-top:1rem;font-size:1.3rem;color:#e5e7eb;}
+    .hero-buttons{margin-top:2rem;display:flex;gap:1rem;justify-content:center;}
+    .impact{padding:5rem 2rem;background:#ecfdf5;text-align:center;}
+    .impact h2{font-size:2.5rem;font-weight:800;color:#15803d;margin-bottom:1rem;}
+    .impact p{max-width:700px;margin:0 auto 3rem;color:#374151;font-size:1.1rem;}
+    .impact-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:2rem;}
+    .card{background:white;padding:2rem;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.1);transition:transform 0.3s ease,box-shadow 0.3s ease;}
+    .card:hover{transform:translateY(-5px);box-shadow:0 10px 20px rgba(0,0,0,0.15);}
+    .card h3{font-size:1.5rem;color:#16a34a;margin-bottom:1rem;}
+    .card p{color:#4b5563;font-size:1rem;}
+    .contact{padding:5rem 2rem;background:#f9fafb;text-align:center;}
+    .contact h2{font-size:2.5rem;font-weight:800;color:#15803d;margin-bottom:1rem;}
+    .contact p{margin-bottom:2rem;color:#374151;}
+    form{max-width:600px;margin:0 auto;text-align:left;}
+    form label{display:block;margin-bottom:0.5rem;font-weight:600;color:#374151;}
+    form input, form textarea{width:100%;padding:0.8rem;margin-bottom:1.5rem;border:2px solid #d1d5db;border-radius:8px;font-size:1rem;}
+    form input:focus, form textarea:focus{border-color:#16a34a;outline:none;box-shadow:0 0 0 3px rgba(34,197,94,0.2);}
+    form button{display:block;margin:0 auto;}
+    
+    /* Donor/Receiver pages */
+    #donor-page, #receiver-page{display:none;padding:2rem;background:#f9fafb;min-height:100vh;}
+    
+    /* Donor page specific styles */
+    .donor-header{background:linear-gradient(135deg,#16a34a,#22c55e);color:white;padding:2rem;border-radius:12px;text-align:center;margin-bottom:2rem;}
+    .donor-header h2{font-size:2.5rem;font-weight:800;margin-bottom:0.5rem;}
+    .donor-header p{font-size:1.1rem;opacity:0.9;}
+    
+    .donor-nav{display:flex;gap:1rem;margin-bottom:2rem;justify-content:center;}
+    .donor-nav button{background:white;color:#16a34a;border:2px solid #16a34a;padding:0.8rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;transition:0.3s;}
+    .donor-nav button.active{background:#16a34a;color:white;}
+    .donor-nav button:hover{background:#f3f4f6;}
+    .donor-nav button.active:hover{background:#15803d;}
+    
+    .donor-section{display:none;max-width:1200px;margin:0 auto;}
+    .donor-section.active{display:block;}
+    
+    .post-food-form{background:white;padding:2rem;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.1);margin-bottom:2rem;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+    .form-group{display:flex;flex-direction:column;}
+    .form-group.full-width{grid-column:1/-1;}
+    .form-group label{margin-bottom:0.5rem;font-weight:600;color:#374151;}
+    .form-group input, .form-group textarea, .form-group select{padding:0.8rem;border:2px solid #d1d5db;border-radius:8px;font-size:1rem;}
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus{border-color:#16a34a;outline:none;box-shadow:0 0 0 3px rgba(34,197,94,0.2);}
+    
+    .file-input-wrapper{position:relative;display:inline-block;overflow:hidden;background:#16a34a;color:white;padding:0.8rem 1.3rem;border-radius:8px;cursor:pointer;transition:0.3s;}
+    .file-input-wrapper:hover{background:#15803d;}
+    .file-input-wrapper input[type=file]{position:absolute;left:-9999px;}
+    
+    .food-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:2rem;}
+    .food-item{background:white;border-radius:12px;overflow:hidden;box-shadow:0 6px 16px rgba(0,0,0,0.1);transition:transform 0.3s ease;}
+    .food-item:hover{transform:translateY(-2px);}
+    .food-image{width:100%;height:200px;object-fit:cover;background:#f3f4f6;}
+    .food-details{padding:1.5rem;}
+    .food-title{font-size:1.3rem;font-weight:700;color:#1f2937;margin-bottom:0.5rem;}
+    .food-description{color:#6b7280;margin-bottom:1rem;line-height:1.5;}
+    .food-meta{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;font-size:0.9rem;}
+    .food-meta span{display:flex;align-items:center;gap:0.3rem;}
+    .food-actions{display:flex;gap:0.5rem;justify-content:space-between;}
+    .status-badge{padding:0.3rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:600;text-transform:uppercase;}
+    .status-available{background:#dcfce7;color:#166534;}
+    .status-claimed{background:#fef3c7;color:#92400e;}
+    .status-donated{background:#dbeafe;color:#1e40af;}
+    
+    /* Receiver page specific styles */
+    .receiver-header{background:linear-gradient(135deg,#2563eb,#3b82f6);color:white;padding:2rem;border-radius:12px;text-align:center;margin-bottom:2rem;}
+    .receiver-header h2{font-size:2.5rem;font-weight:800;margin-bottom:0.5rem;}
+    .receiver-header p{font-size:1.1rem;opacity:0.9;}
+    
+    .receiver-nav{display:flex;gap:1rem;margin-bottom:2rem;justify-content:center;}
+    .receiver-nav button{background:white;color:#2563eb;border:2px solid #2563eb;padding:0.8rem 1.5rem;border-radius:8px;font-weight:600;cursor:pointer;transition:0.3s;}
+    .receiver-nav button.active{background:#2563eb;color:white;}
+    .receiver-nav button:hover{background:#f3f4f6;}
+    .receiver-nav button.active:hover{background:#1d4ed8;}
+    
+    .receiver-section{display:none;max-width:1200px;margin:0 auto;}
+    .receiver-section.active{display:block;}
+    
+    .filters-panel{background:white;padding:2rem;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,0.1);margin-bottom:2rem;}
+    .filters-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;align-items:end;}
+    .filter-group{display:flex;flex-direction:column;}
+    .filter-group label{margin-bottom:0.5rem;font-weight:600;color:#374151;}
+    .filter-group input, .filter-group select{padding:0.8rem;border:2px solid #d1d5db;border-radius:8px;font-size:1rem;}
+    .filter-group input:focus, .filter-group select:focus{border-color:#2563eb;outline:none;box-shadow:0 0 0 3px rgba(37,99,235,0.2);}
+    
+    .claim-actions{display:flex;gap:0.5rem;justify-content:space-between;align-items:center;}
+    .donor-contact{background:#f0f9ff;color:#0369a1;padding:0.5rem 1rem;border-radius:6px;font-size:0.9rem;font-weight:600;}
+    .freshness-indicator{display:flex;align-items:center;gap:0.3rem;font-size:0.9rem;font-weight:600;}
+    .freshness-fresh{color:#059669;}
+    .freshness-good{color:#d97706;}
+    .freshness-expires{color:#dc2626;}
+    
+    .claim-badge{padding:0.3rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:600;text-transform:uppercase;background:#fef3c7;color:#92400e;}
+    
+    /* User type selection styling */
+    .user-type-selection {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+    .user-type-selection label {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .user-type-selection input[type="radio"] {
+      margin-right: 0.5rem;
+      width: auto;
+    }
+    
+    @media (max-width: 768px) {
+      .form-grid{grid-template-columns:1fr;}
+      .food-list{grid-template-columns:1fr;}
+      .donor-nav, .receiver-nav{flex-wrap:wrap;}
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="logo">🥗 ShareBite</div>
+    <nav>
+      <a href="#" onclick="showHomePage()">Home</a>
+      <a href="#impact">Impact</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="btn" onclick="renderAuth('signup')">Signup</button>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Share Food. Spread Smiles.</h1>
+      <p>Reduce waste. Share food with those in need. Make a difference today.</p>
+      <div class="hero-buttons">
+        <button class="btn" onclick="renderAuth('login')">Login</button>
+        <button class="btn btn-alt" onclick="renderAuth('signup')">Signup</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Impact Section -->
+  <section class="impact" id="impact">
+    <h2>Our Impact</h2>
+    <p>Together with our community, we are making a real difference. Every meal shared brings joy and relief to someone in need.</p>
+    <div class="impact-cards">
+      <div class="card">
+        <h3>10,000+</h3>
+        <p>Meals shared with those in need</p>
+      </div>
+      <div class="card">
+        <h3>500+</h3>
+        <p>Volunteers helping daily</p>
+      </div>
+      <div class="card">
+        <h3>50+</h3>
+        <p>Partner organizations</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <p>We'd love to hear from you! Fill out the form below and we'll get back to you.</p>
+    <form>
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Your Name">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Your Email">
+      <label for="message">Message</label>
+      <textarea id="message" rows="5" placeholder="Your Message"></textarea>
+      <button type="submit" class="btn">Send Message</button>
+    </form>
+  </section>
+
+  <!-- Enhanced Donor Page -->
+  <section id="donor-page">
+    <div class="donor-header">
+      <h2>Welcome, Food Hero! 🍽</h2>
+      <p>Thank you for helping reduce food waste and feeding those in need</p>
+    </div>
+    
+    <div class="donor-nav">
+      <button class="active" onclick="switchDonorTab('profile')">My Profile</button>
+      <button onclick="switchDonorTab('post')">Post Food</button>
+      <button onclick="switchDonorTab('manage')">My Donations</button>
+      <button onclick="showHomePage()">Back to Home</button>
+    </div>
+    
+    <!-- Donor Profile Section -->
+    <div id="profile-section" class="donor-section active">
+      <div class="post-food-form">
+        <h3 style="font-size:1.5rem;margin-bottom:1.5rem;color:#1f2937;">Donor Profile Details</h3>
+        <form id="donor-profile-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="donor-name">Full Name *</label>
+              <input type="text" id="donor-name" placeholder="Your full name" required>
+            </div>
+            <div class="form-group">
+              <label for="donor-phone">Contact Number *</label>
+              <input type="tel" id="donor-phone" placeholder="e.g., +91 98765 43210" required>
+            </div>
+            <div class="form-group">
+              <label for="donor-email">Email Address *</label>
+              <input type="email" id="donor-email" placeholder="your.email@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="donor-organization">Organization (Optional)</label>
+              <input type="text" id="donor-organization" placeholder="Restaurant, NGO, Individual, etc.">
+            </div>
+            <div class="form-group full-width">
+              <label for="donor-address">Complete Address *</label>
+              <textarea id="donor-address" rows="3" placeholder="Full address including area, city, pincode" required></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label for="donor-availability">Availability Hours</label>
+              <input type="text" id="donor-availability" placeholder="e.g., 9 AM - 6 PM, Weekdays only">
+            </div>
+          </div>
+          <button type="submit" class="btn" style="margin-top:1rem;">Save Profile</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Post Food Section -->
+    <div id="post-section" class="donor-section">
+      <div class="post-food-form">
+        <h3 style="font-size:1.5rem;margin-bottom:1.5rem;color:#1f2937;">Post Surplus Food</h3>
+        <div id="profile-required-notice" style="background:#fef3c7;border:1px solid #f59e0b;padding:1rem;border-radius:8px;margin-bottom:1.5rem;display:none;">
+          <p style="color:#92400e;margin:0;">⚠ Please complete your donor profile first before posting food donations.</p>
+          <button class="btn btn-small" onclick="switchDonorTab('profile')" style="margin-top:0.5rem;">Complete Profile</button>
+        </div>
+        <form id="post-food-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="food-title">Food Title *</label>
+              <input type="text" id="food-title" placeholder="e.g., Fresh Vegetables, Cooked Rice" required>
+            </div>
+            <div class="form-group">
+              <label for="food-quantity">Quantity *</label>
+              <input type="text" id="food-quantity" placeholder="e.g., 5 kg, Serves 10 people" required>
+            </div>
+            <div class="form-group full-width">
+              <label for="food-description">Description *</label>
+              <textarea id="food-description" rows="4" placeholder="Describe the food, cooking method, ingredients, etc." required></textarea>
+            </div>
+            <div class="form-group">
+              <label for="best-before">Best Before *</label>
+              <input type="datetime-local" id="best-before" required>
+            </div>
+            <div class="form-group">
+              <label for="food-photo">Food Photo</label>
+              <div class="file-input-wrapper">
+                <input type="file" id="food-photo" accept="image/*">
+                📷 Choose Photo
+              </div>
+            </div>
+            <div class="form-group full-width">
+              <label for="pickup-location">Pickup Location *</label>
+              <input type="text" id="pickup-location" placeholder="Specific location within your address" required>
+            </div>
+          </div>
+          <button type="submit" class="btn" style="margin-top:1rem;" id="post-food-btn">Post Food Donation</button>
+        </form>
+      </div>
+    </div>
+    
+    <!-- Manage Donations Section -->
+    <div id="manage-section" class="donor-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+        <h3 style="font-size:1.5rem;color:#1f2937;">My Food Donations</h3>
+        <span id="donation-count" style="background:#ecfdf5;color:#166534;padding:0.5rem 1rem;border-radius:20px;font-weight:600;">0 Active Donations</span>
+      </div>
+      <div id="food-list" class="food-list">
+        <!-- Food items will be populated here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Enhanced Receiver Page -->
+  <section id="receiver-page">
+    <div class="receiver-header">
+      <h2>Welcome, Food Seeker! 🤝</h2>
+      <p>Find fresh food donations in your area and connect with generous donors</p>
+    </div>
+    
+    <div class="receiver-nav">
+      <button class="active" onclick="switchReceiverTab('browse')">Browse Food</button>
+      <button onclick="switchReceiverTab('claimed')">My Claims</button>
+      <button onclick="showHomePage()">Back to Home</button>
+    </div>
+    
+    <!-- Browse Food Section -->
+    <div id="browse-section" class="receiver-section active">
+      <!-- Filters -->
+      <div class="filters-panel">
+        <h3 style="font-size:1.3rem;margin-bottom:1rem;color:#1f2937;">Filter Available Food</h3>
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label for="location-filter">Location</label>
+            <input type="text" id="location-filter" placeholder="Enter area or pincode">
+          </div>
+          <div class="filter-group">
+            <label for="freshness-filter">Freshness</label>
+            <select id="freshness-filter">
+              <option value="all">All Items</option>
+              <option value="fresh">Very Fresh (Today)</option>
+              <option value="good">Good (1-2 days)</option>
+              <option value="expires-soon">Expires Soon</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="food-type-filter">Food Type</label>
+            <select id="food-type-filter">
+              <option value="all">All Types</option>
+              <option value="cooked">Cooked Food</option>
+              <option value="fresh">Fresh Produce</option>
+              <option value="packaged">Packaged Items</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <button class="btn" onclick="applyFilters()">Apply Filters</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Available Food List -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin:2rem 0 1rem;">
+        <h3 style="font-size:1.5rem;color:#1f2937;">Available Food Donations</h3>
+        <span id="available-count" style="background:#ecfdf5;color:#166534;padding:0.5rem 1rem;border-radius:20px;font-weight:600;">0 Items Available</span>
+      </div>
+      <div id="available-food-list" class="food-list">
+        <!-- Available food items will be populated here -->
+      </div>
+    </div>
+    
+    <!-- My Claims Section -->
+    <div id="claimed-section" class="receiver-section">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;">
+        <h3 style="font-size:1.5rem;color:#1f2937;">My Food Claims</h3>
+        <span id="claims-count" style="background:#fef3c7;color:#92400e;padding:0.5rem 1rem;border-radius:20px;font-weight:600;">0 Active Claims</span>
+      </div>
+      <div id="claimed-food-list" class="food-list">
+        <!-- Claimed food items will be populated here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+  <script>
+    // -------------------- SUPABASE INIT --------------------
+const supabaseUrl = 'YOUR_SUPABASE_URL';
+const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+// -------------------- GLOBAL VARIABLES --------------------
+let donorProfile = null;
+let foodDonations = [];
+let claimedItems = [];
+
+// -------------------- SIGN UP --------------------
+async function signUp(email, password, name, location) {
+  const { user, error } = await supabase.auth.signUp({ email, password });
+
+  if (error) {
+    alert('Signup failed: ' + error.message);
+    return;
+  }
+
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .insert([{ id: user.id, email, name, location }]);
+
+  if (profileError) {
+    console.error(profileError);
+    alert('Error saving profile');
+  } else {
+    alert('Signup successful! Please login.');
+  }
+}
+
+// -------------------- LOGIN --------------------
+async function login(email, password) {
+  const { session, error } = await supabase.auth.signIn({ email, password });
+  if (error) {
+    alert('Login failed: ' + error.message);
+    return;
+  }
+  alert('Login successful!');
+  loadDonorProfile();
+  fetchFoodDonations();
+  fetchClaimedFood();
+}
+
+// -------------------- LOGOUT --------------------
+async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    alert('Logout failed: ' + error.message);
+    return;
+  }
+  alert('Logged out!');
+  donorProfile = null;
+  foodDonations = [];
+  claimedItems = [];
+  document.getElementById('available-food-list').innerHTML = '';
+  document.getElementById('claimed-food-list').innerHTML = '';
+}
+
+// -------------------- LOAD DONOR PROFILE --------------------
+async function loadDonorProfile() {
+  const user = supabase.auth.user();
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
+  if (error) {
+    console.error('Error loading profile:', error);
+    return;
+  }
+  donorProfile = data;
+}
+
+// -------------------- FOOD DONATION --------------------
+async function addFoodDonation(foodName, quantity, expiryDate) {
+  if (!donorProfile) {
+    alert('Please login first!');
+    return;
+  }
+
+  const { error } = await supabase.from('food_donations').insert([
+    {
+      donor_id: donorProfile.id,
+      food_name: foodName,
+      quantity,
+      expiry_date: expiryDate,
+      claimed: false,
+    },
+  ]);
+
+  if (error) {
+    console.error(error);
+    alert('Error adding donation');
+  } else {
+    alert('Food donation added!');
+    fetchFoodDonations();
+  }
+}
+
+// -------------------- FETCH AVAILABLE FOOD --------------------
+async function fetchFoodDonations() {
+  const { data, error } = await supabase
+    .from('food_donations')
+    .select('*')
+    .eq('claimed', false);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+  foodDonations = data;
+  renderFoodDonations();
+}
+
+// -------------------- RENDER AVAILABLE FOOD --------------------
+function renderFoodDonations() {
+  const list = document.getElementById('available-food-list');
+  list.innerHTML = '';
+  foodDonations.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = `${item.food_name} - ${item.quantity} - Expires: ${item.expiry_date}`;
+    
+    const claimBtn = document.createElement('button');
+    claimBtn.textContent = 'Claim';
+    claimBtn.onclick = () => claimFood(item.id);
+    
+    li.appendChild(claimBtn);
+    list.appendChild(li);
+  });
+}
+
+// -------------------- CLAIM FOOD --------------------
+async function claimFood(foodId) {
+  const user = supabase.auth.user();
+  if (!user) {
+    alert('Please login first!');
+    return;
+  }
+
+  const { error } = await supabase
+    .from('food_donations')
+    .update({ claimed: true, claimed_by: user.id })
+    .eq('id', foodId);
+
+  if (error) {
+    console.error(error);
+    alert('Error claiming food');
+  } else {
+    alert('Food claimed!');
+    fetchFoodDonations();
+    fetchClaimedFood();
+  }
+}
+
+// -------------------- FETCH CLAIMED FOOD --------------------
+async function fetchClaimedFood() {
+  const user = supabase.auth.user();
+  if (!user) return;
+
+  const { data, error } = await supabase
+    .from('food_donations')
+    .select('*')
+    .eq('claimed_by', user.id);
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+  claimedItems = data;
+  renderClaimedFood();
+}
+
+// -------------------- RENDER CLAIMED FOOD --------------------
+function renderClaimedFood() {
+  const list = document.getElementById('claimed-food-list');
+  list.innerHTML = '';
+  claimedItems.forEach((item) => {
+    const li = document.createElement('li');
+    li.textContent = `${item.food_name} - ${item.quantity} - Expires: ${item.expiry_date}`;
+    list.appendChild(li);
+  });
+}
+
+// -------------------- BUTTON EVENT LISTENERS --------------------
+document.getElementById('signup-btn')?.addEventListener('click', () => {
+  const email = document.getElementById('signup-email').value;
+  const password = document.getElementById('signup-password').value;
+  const name = document.getElementById('signup-name').value;
+  const location = document.getElementById('signup-location').value;
+  signUp(email, password, name, location);
+});
+
+document.getElementById('login-btn')?.addEventListener('click', () => {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  login(email, password);
+});
+
+document.getElementById('logout-btn')?.addEventListener('click', logout);
+
+document.getElementById('add-food-btn')?.addEventListener('click', () => {
+  const name = document.getElementById('food-name').value;
+  const qty = document.getElementById('food-quantity').value;
+  const expiry = document.getElementById('food-expiry').value;
+  addFoodDonation(name, qty, expiry);
+});
+
+// -------------------- AUTO LOAD ON PAGE --------------------
+window.addEventListener('load', () => {
+  if (supabase.auth.user()) {
+    loadDonorProfile();
+    fetchFoodDonations();
+    fetchClaimedFood();
+  }
+});
+
+  </script>
+</body>
+</html>
