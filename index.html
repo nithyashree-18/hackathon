@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShareBite</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1046/1046784.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header>
+    <div class="logo">🥗 ShareBite</div>
+
+    <nav id="main-nav">
+      <a href="#home">Home</a>
+      <a href="#impact">Impact</a>
+      <a href="#contact">Contact</a>
+      <span id="role-links"></span>
+    </nav>
+
+    <div id="auth-buttons" class="row">
+      <button class="btn" onclick="window.App.renderView('login')">Login</button>
+      <button class="btn btn-alt" onclick="window.App.renderView('signup')">Signup</button>
+    </div>
+  </header>
+
+  <!-- ===== Hero (Home stays same) ===== -->
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <h1>Share Food. Spread Smiles.</h1>
+      <p>Reduce waste. Share food with those in need. Make a difference today.</p>
+      <div class="hero-buttons">
+        <button class="btn" onclick="window.App.renderView('login')">Login</button>
+        <button class="btn btn-alt" onclick="window.App.renderView('signup')">Signup</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Impact ===== -->
+  <section id="impact" class="section impact">
+    <div class="container">
+      <h2>Our Impact</h2>
+      <p class="lead">Every meal shared brings joy and relief to someone in need.</p>
+      <div class="cards">
+        <div class="card"><h3>10,000+</h3><p class="muted">Meals shared</p></div>
+        <div class="card"><h3>500+</h3><p class="muted">Volunteers</p></div>
+        <div class="card"><h3>50+</h3><p class="muted">Partner organizations</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section id="contact" class="section contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <form class="panel box" onsubmit="event.preventDefault(); alert('Thanks for reaching out!');">
+        <div class="row">
+          <div class="field"><label>Name</label><input class="input" placeholder="Your name"></div>
+          <div class="field"><label>Email</label><input type="email" class="input" placeholder="you@example.com"></div>
+        </div>
+        <div class="field"><label>Message</label><textarea class="textarea" placeholder="Say hello…"></textarea></div>
+        <div class="actions"><button class="btn">Send Message</button></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== App (dashboards render here) ===== -->
+  <div id="app" class="panel"></div>
+
+  <!-- ===== Modal ===== -->
+  <div id="modal">
+    <div class="sheet">
+      <p id="modal-text" style="margin-bottom:1rem"></p>
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn" onclick="document.getElementById('modal').style.display='none'">OK</button>
+      </div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+
+</html>
